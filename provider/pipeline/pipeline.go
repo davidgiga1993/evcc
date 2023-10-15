@@ -8,11 +8,9 @@ import (
 	"strings"
 
 	xj "github.com/basgys/goxml2json"
-	"github.com/evcc-io/evcc/provider/javascript"
 	"github.com/evcc-io/evcc/util"
 	"github.com/evcc-io/evcc/util/jq"
 	"github.com/itchyny/gojq"
-	"github.com/robertkrimen/otto"
 	"github.com/volkszaehler/mbmd/meters/rs485"
 )
 
@@ -23,7 +21,7 @@ type Pipeline struct {
 	dflt   string
 	unpack string
 	decode string
-	vm     *otto.Otto
+	// vm     *otto.Otto
 	script string
 }
 
@@ -107,12 +105,12 @@ func (p *Pipeline) WithDecode(decode string) (*Pipeline, error) {
 
 // WithScript adds a javascript script to process the response
 func (p *Pipeline) WithScript(vm, script string) (*Pipeline, error) {
-	regvm, err := javascript.RegisteredVM(vm, "")
-	if err != nil {
-		return nil, err
-	}
+	// regvm, err := javascript.RegisteredVM(vm, "")
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	p.vm = regvm
+	// p.vm = regvm
 	p.script = script
 
 	return p, nil
@@ -228,22 +226,22 @@ func (p *Pipeline) Process(in []byte) ([]byte, error) {
 		b = []byte(fmt.Sprintf("%v", v))
 	}
 
-	if p.vm != nil {
-		if err := p.vm.Set("val", string(b)); err != nil {
-			return b, err
-		}
+	// if p.vm != nil {
+	// 	if err := p.vm.Set("val", string(b)); err != nil {
+	// 		return b, err
+	// 	}
 
-		v, err := p.vm.Eval(p.script)
-		if err != nil {
-			return b, err
-		}
+	// 	v, err := p.vm.Eval(p.script)
+	// 	if err != nil {
+	// 		return b, err
+	// 	}
 
-		s, err := v.ToString()
-		b = []byte(s)
-		if err != nil {
-			return b, err
-		}
-	}
+	// 	s, err := v.ToString()
+	// 	b = []byte(s)
+	// 	if err != nil {
+	// 		return b, err
+	// 	}
+	// }
 
 	return b, nil
 }
