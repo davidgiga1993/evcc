@@ -70,6 +70,7 @@ func (lp *Loadpoint) effectiveMinCurrent() float64 {
 	minCurrent := lpMinCurrent
 
 	if c, ok := lp.charger.(api.CurrentLimiter); ok {
+		lp.log.DEBUG.Println("charger has current limits")
 		if chargerMinCurrent, _, err := c.GetMinMaxCurrent(); err == nil {
 			if lp.HasUserDefinedMinCurrent() {
 				// Case a)
@@ -90,7 +91,7 @@ func (lp *Loadpoint) effectiveMinCurrent() float64 {
 	if lpMinCurrent != minCurrent {
 		lp.publish(keys.EffectiveMinCurrent, minCurrent)
 	}
-
+	lp.log.DEBUG.Printf("effective minCurrent: %v", minCurrent)
 	return minCurrent
 }
 

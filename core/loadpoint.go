@@ -828,17 +828,15 @@ func (lp *Loadpoint) minSocNotReached() bool {
 	if minSoc == 0 {
 		return false
 	}
-
-	if lp.vehicleSoc != 0 {
-		active := lp.vehicleSoc < float64(minSoc)
-		if active {
-			lp.log.DEBUG.Printf("forced charging at vehicle soc %.0f%% (< %.0f%% min soc)", lp.vehicleSoc, float64(minSoc))
-		}
-		return active
+	if lp.vehicleSoc == 0 {
+		lp.log.DEBUG.Printf("vehicle has no SoC")
+		return false
 	}
-
-	minEnergy := v.Capacity() * float64(minSoc) / 100 / soc.ChargeEfficiency
-	return minEnergy > 0 && lp.getChargedEnergy() < minEnergy
+	active := lp.vehicleSoc < float64(minSoc)
+	if active {
+		lp.log.DEBUG.Printf("forced charging at vehicle soc %.0f%% (< %.0f%% min soc)", lp.vehicleSoc, float64(minSoc))
+	}
+	return active
 }
 
 // disableUnlessClimater disables the charger unless climate is active
